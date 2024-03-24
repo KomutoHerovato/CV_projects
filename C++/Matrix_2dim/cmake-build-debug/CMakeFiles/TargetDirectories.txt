@@ -1,0 +1,3 @@
+/Users/damrorus/Documents/GitHub/Damir_B04-208/10_tenth_week/Matrix_2dim/cmake-build-debug/CMakeFiles/Matrix_2dim.dir
+/Users/damrorus/Documents/GitHub/Damir_B04-208/10_tenth_week/Matrix_2dim/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/damrorus/Documents/GitHub/Damir_B04-208/10_tenth_week/Matrix_2dim/cmake-build-debug/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,3 @@
+/Users/damrorus/Documents/GitHub/Damir_B04-208/9_ninth_week/sort/cmake-build-debug/CMakeFiles/sort.dir
+/Users/damrorus/Documents/GitHub/Damir_B04-208/9_ninth_week/sort/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/damrorus/Documents/GitHub/Damir_B04-208/9_ninth_week/sort/cmake-build-debug/CMakeFiles/rebuild_cache.dir

@@ -1,0 +1,3 @@
+/Users/damrorus/Documents/GitHub/Damir_B04-208/8_eighth_week/Exceptions/cmake-build-debug/CMakeFiles/Exceptions.dir
+/Users/damrorus/Documents/GitHub/Damir_B04-208/8_eighth_week/Exceptions/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/damrorus/Documents/GitHub/Damir_B04-208/8_eighth_week/Exceptions/cmake-build-debug/CMakeFiles/rebuild_cache.dir
