@@ -1,0 +1,6 @@
+Int64_t position = iF true then initial + rate *
+
+--
+/*…какой-то текст…*/
+print (100)
+--[sdlg/*dsfsf/*dsg--dslg]
