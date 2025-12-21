@@ -18,8 +18,8 @@
 
 1. **Клонируйте репозиторий** :
    ```bash
-   git clone <ссылка-на-ваш-репозиторий>
-   cd <папка-проекта>
+   git clone https://github.com/KomutoHerovato/CV_projects/tree/main/Test_task
+   cd Test_task
    ```
 2. **Запустите проект**
     ```bash
