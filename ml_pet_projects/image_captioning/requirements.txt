@@ -1,0 +1,7 @@
+numpy>=1.23
+pandas>=1.5
+pillow>=9.0
+torch>=2.0
+torchvision>=0.15
+tensorboard>=2.12
+pytest>=7.0

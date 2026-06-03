@@ -1,0 +1,23 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Experiment artifacts
+outputs/
+runs/
+tensorlogs/
+*.pt
+*.pth
+*.ckpt
+
+# Local datasets
+ml_pet_projects/**/data/
+ml_pet_projects/**/outputs/
+ml_pet_projects/**/.venv/
+lenta_year_task/
