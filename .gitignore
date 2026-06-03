@@ -17,7 +17,7 @@ tensorlogs/
 *.ckpt
 
 # Local datasets
-ml_pet_projects/**/data/
-ml_pet_projects/**/outputs/
-ml_pet_projects/**/.venv/
+projects/**/data/
+projects/**/outputs/
+projects/**/.venv/
 lenta_year_task/

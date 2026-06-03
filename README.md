@@ -1,14 +1,28 @@
 # CV_projects
 
-Pet projects and study projects for my CV.
+Репозиторий с учебными проектами, pet-проектами и задачами, которые можно
+использовать как портфолио для CV.
 
-## Portfolio-ready ML projects
+## Структура
 
-The latest notebooks from Downloads were refactored into reproducible projects
-under [ml_pet_projects](./ml_pet_projects):
+- [projects/ml](./projects/ml) — оформленные ML pet-проекты с README, CLI,
+  тестами, исходными ноутбуками и воспроизводимыми demo-режимами.
+- [C++](./C++) — учебные и практические задачи на C++.
+- [Flex_analysis](./Flex_analysis) — проект с лексическим анализатором на Flex.
+- [Test_task](./Test_task) — тестовое задание с Docker, API и тестами.
+- [ML_lessons](./ML_lessons) — учебные ноутбуки по машинному обучению.
+- [CVision](./CVision), [MolGan](./MolGan), [cifar10_distillation_svd](./cifar10_distillation_svd) —
+  отдельные ML/CV-эксперименты и ноутбуки.
 
-- [RiverSwim PSRL](./ml_pet_projects/riverswim_psrl): Bayesian reinforcement learning with PSRL vs Q-learning.
-- [Lenta Year Classifier](./ml_pet_projects/lenta_year_classifier): Russian news year classification with topic features and modality ablations.
-- [MovieLens Recommender](./ml_pet_projects/movielens_recommender): recommendation baselines and matrix factorization with ranking metrics.
-- [AI Text Detector](./ml_pet_projects/ai_text_detector): human-vs-machine text classification with a BERT fine-tuning setup and TF-IDF baseline.
-- [Image Captioning](./ml_pet_projects/image_captioning): ResNet152 + LSTM image captioning pipeline with COCO-style preprocessing.
+## Витринные ML-проекты
+
+| Проект | Кратко |
+| --- | --- |
+| [RiverSwim PSRL](./projects/ml/riverswim_psrl) | Байесовское RL: PSRL против Q-learning в среде RiverSwim. |
+| [Lenta Year Classifier](./projects/ml/lenta_year_classifier) | Классификация года новости Lenta.ru по тексту и метаданным. |
+| [MovieLens Recommender](./projects/ml/movielens_recommender) | Рекомендательная система: Popular, User-CF, Item-CF и matrix factorization. |
+| [AI Text Detector](./projects/ml/ai_text_detector) | Детектор Human/Machine текста: быстрый TF-IDF baseline и BERT fine-tuning setup. |
+| [Image Captioning](./projects/ml/image_captioning) | Генерация описаний изображений: ResNet152 encoder + LSTM decoder. |
+
+Каждый проект внутри `projects/ml` можно запускать отдельно: в папке проекта
+есть `requirements.txt`, `src/`, `tests/`, `notebooks/` и подробный README.
