@@ -1,0 +1,6 @@
+# Доп. зависимости только для опционального full-режима (trl_variant.py).
+# Основной пакет mini_rlhf от них НЕ зависит.
+torch>=2.0
+transformers>=4.40
+trl>=0.8
+datasets>=2.18

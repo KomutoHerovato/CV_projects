@@ -18,6 +18,7 @@
 
 | Проект | Кратко |
 | --- | --- |
+| [mini RLHF](./projects/ml/mini_rlhf) | Полный RLHF-триплет на маленькой LM с нуля: SFT + Reward Model (Bradley-Terry) + PPO с KL-контролем. |
 | [RiverSwim PSRL](./projects/ml/riverswim_psrl) | Байесовское RL: PSRL против Q-learning в среде RiverSwim. |
 | [Lenta Year Classifier](./projects/ml/lenta_year_classifier) | Классификация года новости Lenta.ru по тексту и метаданным. |
 | [MovieLens Recommender](./projects/ml/movielens_recommender) | Рекомендательная система: Popular, User-CF, Item-CF и matrix factorization. |
