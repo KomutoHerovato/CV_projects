@@ -90,6 +90,32 @@ RL-этапе** — выравнивание по reward-модели.
 - **Reward whitening, GAE, advantage normalization** — приёмы стабилизации,
   реализованные в [rl.py](src/mini_rlhf/rl.py).
 
+## Ablation: сила KL-штрафа
+
+Главный эксперимент. Прогоняем пайплайн при разных `kl_coef` (по 3 сидам) и
+смотрим на компромисс «итоговый reward ↔ насколько политика ушла от reference».
+
+```bash
+PYTHONPATH=src python -m mini_rlhf.ablation        # пишет assets/kl_ablation.{png,csv}
+```
+
+![KL ablation](assets/kl_ablation.png)
+
+| kl_coef (β) | ground-truth reward | KL(policy‖ref) |
+| --- | --- | --- |
+| 0.0 (без штрафа) | +0.59 ± 0.05 | 15.2 |
+| 0.01 | +0.59 ± 0.04 | 18.0 |
+| 0.05 | **+0.63 ± 0.07** | 12.5 |
+| 0.1 | +0.57 ± 0.02 | 7.5 |
+| 0.3 | +0.47 ± 0.01 | 3.7 |
+
+Видно ровно тот компромисс, ради которого в RLHF и нужен KL: при сильном β
+политика держится близко к SFT (KL мал), но не дотягивает по reward; при β→0
+ограничения снимаются, KL разрастается, а сам reward уже не растёт (политика
+начинает хакать reward-модель повтором позитивных слов). Умеренный β≈0.05 даёт
+лучший баланс. Числа слегка шумные из-за маленькой модели — поэтому усреднение
+по сидам и приведены std.
+
 ## Параметры
 
 ```bash
@@ -102,14 +128,35 @@ PYTHONPATH=src python -m mini_rlhf.cli \
 ## Full-режим: тот же RLHF на реальной LM через TRL
 
 [trl_variant.py](src/mini_rlhf/trl_variant.py) — мост к индустриальному стеку:
-`distilgpt2` (82M) + реальная sentiment-модель как reward + `trl.PPOTrainer` на
-датасете IMDB. Работает на M1 (MPS), но медленно и требует скачивания весов,
-поэтому вынесен отдельно и **не входит в smoke-тесты**.
+`distilgpt2` (82M) + реальная sentiment-модель (`lvwerra/distilbert-imdb`) как
+reward + `trl.PPOTrainer` на датасете IMDB. Работает на M1 (MPS), но медленно и
+требует скачивания весов, поэтому вынесен отдельно и **не входит в smoke-тесты**.
 
 ```bash
 pip install -r requirements-trl.txt
-PYTHONPATH=src python -m mini_rlhf.trl_variant --steps 20 --device mps
+PYTHONPATH=src python -m mini_rlhf.trl_variant --steps 30 --batch-size 16
 ```
+
+Реальный прогон на MacBook M1 (MPS, 30 PPO-шагов) — полный лог в
+[assets/trl_run_log.txt](assets/trl_run_log.txt):
+
+![TRL run](assets/trl_run.png)
+
+```
+[trl] device = mps
+step 000 | mean positive reward = 0.397 | kl = 0.000
+step 008 | mean positive reward = 0.766 | kl = 0.680
+step 029 | mean positive reward = 0.660 | kl = 2.022
+```
+
+Доля позитива растёт с ~0.40 до ~0.66–0.77, а KL к reference плавно
+увеличивается по мере того, как политика отходит от исходной `distilgpt2` — та
+же логика, что и в from-scratch версии, но на настоящей LM и стандартном
+PPO-трейнере.
+
+> Версии: код использует «классический» `trl.PPOTrainer` (`ppo_trainer.step` /
+> `.generate`), доступный в `trl < 0.12`; в новых версиях этот API переименован
+> в `PPOv2Trainer`. Устройство выбирает Accelerate автоматически (на M1 — MPS).
 
 ## Про железо
 
@@ -134,7 +181,9 @@ src/mini_rlhf/
   rl.py            # этап 3: PPO / REINFORCE с KL-контролем
   pipeline.py      # оркестрация и артефакты
   cli.py           # точка входа
+  ablation.py      # эксперимент по силе KL-штрафа
   trl_variant.py   # опциональный full-режим на HuggingFace TRL
+assets/            # закоммиченные графики (ablation, TRL-прогон)
 tests/test_smoke.py
 notebooks/walkthrough.ipynb
 ```

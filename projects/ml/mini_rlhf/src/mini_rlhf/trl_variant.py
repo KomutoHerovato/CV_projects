@@ -18,7 +18,7 @@ KL-контролем), но:
 
 Запуск:
 
-    PYTHONPATH=src python -m mini_rlhf.trl_variant --steps 20 --device mps
+    PYTHONPATH=src python -m mini_rlhf.trl_variant --steps 20
 """
 from __future__ import annotations
 
@@ -29,9 +29,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="TRL PPO sentiment alignment (full mode).")
     parser.add_argument("--model", default="distilgpt2")
     parser.add_argument("--reward-model", default="lvwerra/distilbert-imdb")
+    parser.add_argument("--dataset", default="stanfordnlp/imdb",
+                        help="источник промптов (HF dataset id)")
     parser.add_argument("--steps", type=int, default=20)
     parser.add_argument("--batch-size", type=int, default=16)
-    parser.add_argument("--device", default="mps", choices=["cpu", "mps", "cuda"])
+    # устройство выбирает Accelerate автоматически (на M1 — MPS).
     args = parser.parse_args()
 
     # Импорты внутри main, чтобы основной пакет не зависел от TRL/transformers.
@@ -45,13 +47,11 @@ def main() -> None:
     )
     from trl.core import LengthSampler
 
-    device = args.device if (args.device != "mps" or torch.backends.mps.is_available()) else "cpu"
-
     tokenizer = AutoTokenizer.from_pretrained(args.model)
     tokenizer.pad_token = tokenizer.eos_token
 
     # IMDB как источник промптов (первые несколько токенов отзыва).
-    ds = load_dataset("imdb", split="train")
+    ds = load_dataset(args.dataset, split="train")
     ds = ds.filter(lambda x: len(x["text"]) > 200, batched=False)
     sampler = LengthSampler(4, 12)
 
@@ -64,8 +64,12 @@ def main() -> None:
     ds = ds.map(tokenize, batched=False)
     ds.set_format(type="torch")
 
-    model = AutoModelForCausalLMWithValueHead.from_pretrained(args.model).to(device)
-    ref_model = AutoModelForCausalLMWithValueHead.from_pretrained(args.model).to(device)
+    model = AutoModelForCausalLMWithValueHead.from_pretrained(args.model)
+    ref_model = AutoModelForCausalLMWithValueHead.from_pretrained(args.model)
+
+    # отклики имеют разную длину, поэтому батч собираем без stack — списком
+    def collator(data):
+        return {key: [d[key] for d in data] for key in data[0]}
 
     ppo_config = PPOConfig(
         model_name=args.model,
@@ -73,7 +77,13 @@ def main() -> None:
         mini_batch_size=args.batch_size,
         learning_rate=1.41e-5,
     )
-    ppo_trainer = PPOTrainer(ppo_config, model, ref_model, tokenizer, dataset=ds)
+    ppo_trainer = PPOTrainer(
+        ppo_config, model, ref_model, tokenizer, dataset=ds, data_collator=collator
+    )
+    # устройством управляет Accelerate (на Mac по умолчанию MPS); выравниваем
+    # на него и наши тензоры, иначе словим рассинхрон cpu/mps.
+    device = ppo_trainer.accelerator.device
+    print(f"[trl] device = {device}")
 
     # reward = логит позитивного класса sentiment-модели
     sentiment = pipeline("sentiment-analysis", model=args.reward_model, device=device)
